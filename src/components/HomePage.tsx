@@ -74,6 +74,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuLinkItem,
   DropdownMenuPortal,
+  DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
@@ -151,10 +152,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import {
+  AlertTriangle,
+  CheckCircle,
   ChevronLeft,
   ChevronRight,
+  Info,
+  Loader,
   SettingsIcon,
   UserIcon,
+  XCircle,
 } from "lucide-react";
 import {
   Command,
@@ -164,8 +170,18 @@ import {
   CommandEmpty,
   CommandShortcut,
 } from "@/components/ui/command";
-import { useState } from "react";
-import { DropdownMenuRadioGroup } from "@radix-ui/react-dropdown-menu";
+import React, { useState } from "react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "./ui/accordion";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb";
+import Link from "next/link";
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
+import Autoplay from "embla-carousel-autoplay"
 
 const tabData = [
   {
@@ -212,6 +228,25 @@ export default function HomePage() {
   const [isActive, setIsActive] = useState(true);
   const [isPrivate, setIsPrivate] = useState(false);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
+  const [api, setApi] = React.useState<CarouselApi>()
+  const [current, setCurrent] = React.useState(0)
+  const [count, setCount] = React.useState(0)
+  React.useEffect(() => {
+    if (!api) {
+      return
+    }
+ 
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap() + 1)
+ 
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1)
+    })
+  }, [api])
+
+  const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  )
 
   const handleChangeNew = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(event.target.value);
@@ -294,6 +329,274 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col justify-start items-start gap-4">
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* accordion start */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>¿Cómo puedo registrarme?</AccordionTrigger>
+            <AccordionContent>
+              Para registrarte, haz clic en el botón de "Registrarse" en la
+              esquina superior derecha y sigue las instrucciones.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>
+              ¿Cómo puedo restablecer mi contraseña?
+            </AccordionTrigger>
+            <AccordionContent>
+              Puedes restablecer tu contraseña haciendo clic en "¿Olvidaste tu
+              contraseña?" en la página de inicio de sesión.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3">
+            <AccordionTrigger>¿Cómo contacto con soporte?</AccordionTrigger>
+            <AccordionContent>
+              Para contactar con soporte, envía un correo electrónico a
+              soporte@ejemplo.com o llama al 123-456-7890.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Inicio</AccordionTrigger>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>Servicios</AccordionTrigger>
+            <AccordionContent>
+              <ul>
+                <li>
+                  <a href="/servicios/consultoria">Consultoría</a>
+                </li>
+                <li>
+                  <a href="/servicios/desarrollo">Desarrollo</a>
+                </li>
+                <li>
+                  <a href="/servicios/soporte">Soporte</a>
+                </li>
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3">
+            <AccordionTrigger>Contacto</AccordionTrigger>
+            <AccordionContent>
+              <p>
+                Puedes contactarnos a través del formulario de contacto o
+                llamando al 123-456-7890.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>{" "}
+        <Accordion type="multiple">
+          <AccordionItem value="specifications">
+            <AccordionTrigger>Especificaciones</AccordionTrigger>
+            <AccordionContent>
+              <ul>
+                <li>Dimensiones: 15x10x5 cm</li>
+                <li>Peso: 500g</li>
+                <li>Material: Acero inoxidable</li>
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="reviews">
+            <AccordionTrigger>Reseñas</AccordionTrigger>
+            <AccordionContent>
+              <p>
+                Los clientes califican este producto con 4.5 estrellas de 5.
+                ¡Les encanta!
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="returns">
+            <AccordionTrigger>Política de devoluciones</AccordionTrigger>
+            <AccordionContent>
+              <p>
+                Tienes 30 días para devolver el producto si no estás satisfecho.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <Accordion type="multiple">
+          <AccordionItem value="general-settings">
+            <AccordionTrigger>Configuraciones Generales</AccordionTrigger>
+            <AccordionContent>
+              <p>
+                Aquí puedes cambiar las configuraciones básicas del sistema.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="user-management">
+            <AccordionTrigger>Gestión de Usuarios</AccordionTrigger>
+            <AccordionContent>
+              <p>Administra roles y permisos de los usuarios.</p>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="advanced-settings">
+            <AccordionTrigger>Configuraciones Avanzadas</AccordionTrigger>
+            <AccordionContent>
+              <p>
+                Advertencia: Estas configuraciones son para usuarios avanzados.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        {/* accordion end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* alert start */}
+        <Alert variant="success" size="lg">
+          <CheckCircle className="h-6 w-6 text-white" />
+          <div>
+            <AlertTitle>Acción Confirmada</AlertTitle>
+            <AlertDescription>
+              Tu acción se ha completado con éxito. Puedes proceder con los
+              siguientes pasos.
+            </AlertDescription>
+          </div>
+        </Alert>
+        <Alert variant="warning" size="xl">
+          <AlertTriangle className="h-6 w-6 text-white" />
+          <div>
+            <AlertTitle>Advertencia</AlertTitle>
+            <AlertDescription>
+              Este proceso podría afectar la integridad de tus datos. Procede
+              con precaución.
+            </AlertDescription>
+          </div>
+        </Alert>{" "}
+        <Alert variant="danger" size="lg">
+          <XCircle className="h-6 w-6 text-white" />
+          <div>
+            <AlertTitle>Error Crítico</AlertTitle>
+            <AlertDescription>
+              Ocurrió un error al procesar tu solicitud. Por favor, inténtalo de
+              nuevo más tarde.
+            </AlertDescription>
+          </div>
+        </Alert>
+        <Alert variant="info" size="lg">
+          <Info className="h-6 w-6 text-white" />
+          <div>
+            <AlertTitle>Información Importante</AlertTitle>
+            <AlertDescription>
+              Hay una nueva actualización disponible. Revisa los detalles para
+              obtener más información.
+            </AlertDescription>
+          </div>
+        </Alert>{" "}
+        <Alert variant="loading" size="lg">
+          <Loader className="h-6 w-6 text-white animate-spin" />
+          <div>
+            <AlertTitle>Cargando...</AlertTitle>
+            <AlertDescription>
+              Por favor, espera mientras procesamos tu solicitud.
+            </AlertDescription>
+          </div>
+        </Alert>
+        {/* alert end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* breadcumb start */}
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/products">Products</BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Product Name</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/category">Category</BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbEllipsis />
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/subcategory">Subcategory</BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Current Page</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href='#'>Home</Link>
+              </BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href='#'>About</Link>
+              </BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Current Page</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>{" "}
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbSeparator>
+                <span className="mx-2">/</span>
+              </BreadcrumbSeparator>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/services">Services</BreadcrumbLink>
+              <BreadcrumbSeparator>
+                <span className="mx-2">/</span>
+              </BreadcrumbSeparator>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Current Service</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/section">Section</BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbEllipsis />
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/subsection">Subsection</BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Final Page</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        {/* breadcumb end */}
+      </div>
       <div className="flex flex-wrap gap-4 justify-center">
         {/* botones start */}
         <Button variant="default" size="default">
@@ -614,6 +917,90 @@ export default function HomePage() {
           Custom Badge
         </Badge>
         {/* badge end */}
+      </div>
+      <div className="flex flex-row gap-40 justify-center items-center">
+      {/* carousel start */}
+      <Carousel
+      opts={{
+        align: "start",
+      }}
+      className="w-full max-w-sm"
+    >
+      <CarouselContent>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+            <div className="p-1">
+              <Card>
+                <CardContent className="flex aspect-square items-center justify-center p-6">
+                  <span className="text-3xl font-semibold">{index + 1}</span>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel> <Carousel className="w-full max-w-sm">
+      <CarouselContent className="-ml-1">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+            <div className="p-1">
+              <Card>
+                <CardContent className="flex aspect-square items-center justify-center p-6">
+                  <span className="text-2xl font-semibold">{index + 1}</span>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel> <Carousel
+      opts={{
+        align: "start",
+      }}
+      orientation="vertical"
+      className="w-full max-w-xs"
+    >
+      <CarouselContent className="-mt-1 h-[200px]">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <CarouselItem key={index} className="pt-1 md:basis-1/2">
+            <div className="p-1">
+              <Card>
+                <CardContent className="flex items-center justify-center p-6">
+                  <span className="text-3xl font-semibold">{index + 1}</span>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+    <div>
+      <Carousel setApi={setApi} className="w-full max-w-xs">
+        <CarouselContent>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <CarouselItem key={index}>
+              <Card>
+                <CardContent className="flex aspect-square items-center justify-center p-6">
+                  <span className="text-4xl font-semibold">{index + 1}</span>
+                </CardContent>
+              </Card>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+      <div className="py-2 text-center text-sm text-muted-foreground">
+        Slide {current} of {count}
+      </div>
+    </div>
+      {/* carousel end */}
       </div>
       <div className="flex flex-wrap gap-4 justify-center">
         {/* calendar start */}
