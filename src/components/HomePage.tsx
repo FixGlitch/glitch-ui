@@ -1,5 +1,9 @@
 "use state";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -153,12 +157,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import {
   AlertTriangle,
+  ArrowUpCircle,
+  Bold,
+  Check,
   CheckCircle,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  ChevronsUpDown,
+  Circle,
+  HelpCircle,
   Info,
+  Italic,
   Loader,
+  LucideIcon,
+  MoreHorizontal,
   SettingsIcon,
+  Tags,
+  Trash,
+  Underline,
+  User,
   UserIcon,
   XCircle,
 } from "lucide-react";
@@ -169,6 +187,7 @@ import {
   CommandItem,
   CommandEmpty,
   CommandShortcut,
+  CommandGroup,
 } from "@/components/ui/command";
 import React, { useState } from "react";
 import {
@@ -178,10 +197,101 @@ import {
   AccordionContent,
 } from "./ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "./ui/breadcrumb";
 import Link from "next/link";
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
-import Autoplay from "embla-carousel-autoplay"
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleFooter,
+  CollapsibleHeader,
+  CollapsibleSeparator,
+  CollapsibleSubtitle,
+  CollapsibleTitle,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
+import { cn } from "@/lib/utils";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+import { toast as toasty, useToast } from "./ui/use-toast";
+import { toast as ToastSonner } from "sonner";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "./ui/drawer";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "./ui/input-otp";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "./ui/menubar";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "./ui/resizable";
+import { ToastAction } from "./ui/toast";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 const tabData = [
   {
@@ -196,6 +306,94 @@ const tabData = [
   },
   { id: "pricing", label: "Pricing", content: "This is the pricing content." },
 ];
+
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
+
+type Status = {
+  value: string;
+  label: string;
+  icon: LucideIcon;
+};
+
+const statuses: Status[] = [
+  {
+    value: "backlog",
+    label: "Backlog",
+    icon: HelpCircle,
+  },
+  {
+    value: "todo",
+    label: "Todo",
+    icon: Circle,
+  },
+  {
+    value: "in progress",
+    label: "In Progress",
+    icon: ArrowUpCircle,
+  },
+  {
+    value: "done",
+    label: "Done",
+    icon: CheckCircle2,
+  },
+  {
+    value: "canceled",
+    label: "Canceled",
+    icon: XCircle,
+  },
+];
+
+const labels = [
+  "feature",
+  "bug",
+  "enhancement",
+  "documentation",
+  "design",
+  "question",
+  "maintenance",
+];
+
+const languages = [
+  { label: "English", value: "en" },
+  { label: "French", value: "fr" },
+  { label: "German", value: "de" },
+  { label: "Spanish", value: "es" },
+  { label: "Portuguese", value: "pt" },
+  { label: "Russian", value: "ru" },
+  { label: "Japanese", value: "ja" },
+  { label: "Korean", value: "ko" },
+  { label: "Chinese", value: "zh" },
+] as const;
+
+const FormSchema = z.object({
+  language: z.string({
+    required_error: "Please select a language.",
+  }),
+  pin: z.string().min(6, {
+    message: "Your one-time password must be 6 characters.",
+  }),
+});
 
 export default function HomePage() {
   function saveAction(): void {
@@ -228,25 +426,62 @@ export default function HomePage() {
   const [isActive, setIsActive] = useState(true);
   const [isPrivate, setIsPrivate] = useState(false);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const [api, setApi] = React.useState<CarouselApi>()
-  const [current, setCurrent] = React.useState(0)
-  const [count, setCount] = React.useState(0)
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
+  const [openC, setOpenC] = useState(false);
+  const [openX, setOpenX] = useState(false);
+  const [openZ, setOpenZ] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
+  const [formData, setFormData] = useState({ name: "", email: "" });
+  const { toast } = useToast();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmitX = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Process form data
+    console.log("Form submitted:", formData);
+  };
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      pin: "",
+    },
+  });
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    toasty({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+  }
+
+  const [label, setLabel] = useState("feature");
   React.useEffect(() => {
     if (!api) {
-      return
+      return;
     }
- 
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap() + 1)
- 
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1)
-    })
-  }, [api])
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
-  )
+  );
 
   const handleChangeNew = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(event.target.value);
@@ -538,13 +773,13 @@ export default function HomePage() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href='#'>Home</Link>
+                <Link href="#">Home</Link>
               </BreadcrumbLink>
               <BreadcrumbSeparator />
             </BreadcrumbItem>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href='#'>About</Link>
+                <Link href="#">About</Link>
               </BreadcrumbLink>
               <BreadcrumbSeparator />
             </BreadcrumbItem>
@@ -919,88 +1154,423 @@ export default function HomePage() {
         {/* badge end */}
       </div>
       <div className="flex flex-row gap-40 justify-center items-center">
-      {/* carousel start */}
-      <Carousel
-      opts={{
-        align: "start",
-      }}
-      className="w-full max-w-sm"
-    >
-      <CarouselContent>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-3xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel> <Carousel className="w-full max-w-sm">
-      <CarouselContent className="-ml-1">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-2xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel> <Carousel
-      opts={{
-        align: "start",
-      }}
-      orientation="vertical"
-      className="w-full max-w-xs"
-    >
-      <CarouselContent className="-mt-1 h-[200px]">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index} className="pt-1 md:basis-1/2">
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex items-center justify-center p-6">
-                  <span className="text-3xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
-    <div>
-      <Carousel setApi={setApi} className="w-full max-w-xs">
-        <CarouselContent>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <CarouselItem key={index}>
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-4xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
-      <div className="py-2 text-center text-sm text-muted-foreground">
-        Slide {current} of {count}
+        {/* carousel start */}
+        <Carousel
+          opts={{
+            align: "start",
+          }}
+          className="w-full max-w-sm"
+        >
+          <CarouselContent>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                <div className="p-1">
+                  <Card>
+                    <CardContent className="flex aspect-square items-center justify-center p-6">
+                      <span className="text-3xl font-semibold">
+                        {index + 1}
+                      </span>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>{" "}
+        <Carousel className="w-full max-w-sm">
+          <CarouselContent className="-ml-1">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <CarouselItem
+                key={index}
+                className="pl-1 md:basis-1/2 lg:basis-1/3"
+              >
+                <div className="p-1">
+                  <Card>
+                    <CardContent className="flex aspect-square items-center justify-center p-6">
+                      <span className="text-2xl font-semibold">
+                        {index + 1}
+                      </span>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>{" "}
+        <Carousel
+          opts={{
+            align: "start",
+          }}
+          orientation="vertical"
+          className="w-full max-w-xs"
+        >
+          <CarouselContent className="-mt-1 h-[200px]">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <CarouselItem key={index} className="pt-1 md:basis-1/2">
+                <div className="p-1">
+                  <Card>
+                    <CardContent className="flex items-center justify-center p-6">
+                      <span className="text-3xl font-semibold">
+                        {index + 1}
+                      </span>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+        <div>
+          <Carousel setApi={setApi} className="w-full max-w-xs">
+            <CarouselContent>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <CarouselItem key={index}>
+                  <Card>
+                    <CardContent className="flex aspect-square items-center justify-center p-6">
+                      <span className="text-4xl font-semibold">
+                        {index + 1}
+                      </span>
+                    </CardContent>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+          <div className="py-2 text-center text-sm text-muted-foreground">
+            Slide {current} of {count}
+          </div>
+        </div>
+        {/* carousel end */}
       </div>
-    </div>
-      {/* carousel end */}
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* collapsible start */}
+        <Collapsible>
+          <CollapsibleTrigger className="px-4 py-2 bg-blue-500 text-white">
+            Toggle Menu
+          </CollapsibleTrigger>
+          <CollapsibleContent className="px-4 py-2 bg-gray-100">
+            <ul>
+              <li>Option 1</li>
+              <li>Option 2</li>
+              <li>Option 3</li>
+            </ul>
+          </CollapsibleContent>
+        </Collapsible>
+        <div className="space-y-4">
+          <Collapsible>
+            <CollapsibleTrigger className="px-4 py-2 bg-blue-500 text-white">
+              What is Next.js?
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-4 py-2 bg-gray-100">
+              Next.js is a React framework for building fast and user-friendly
+              web applications.
+            </CollapsibleContent>
+          </Collapsible>
+
+          <Collapsible>
+            <CollapsibleTrigger className="px-4 py-2 bg-blue-500 text-white">
+              How does Next.js work?
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-4 py-2 bg-gray-100">
+              Next.js enables server-side rendering, static site generation, and
+              much more.
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+        <Collapsible open={openX} onOpenChange={setOpenX}>
+          <CollapsibleTrigger className="px-4 py-2 bg-blue-500 text-white">
+            {openX ? "Hide Details" : "Show Details"}
+          </CollapsibleTrigger>
+          <CollapsibleContent className="px-4 py-2 bg-gray-100">
+            <p>This is some additional information that can be toggled.</p>
+          </CollapsibleContent>
+        </Collapsible>{" "}
+        <Collapsible open={openX} onOpenChange={setOpenX}>
+          <CollapsibleTrigger className="px-4 py-2 bg-blue-500 text-white">
+            {openX ? "Collapse" : "Expand"}
+          </CollapsibleTrigger>
+          <CollapsibleContent
+            className="px-4 py-2 bg-gray-100 transition-all duration-300"
+            style={{
+              maxHeight: openX ? "100px" : "0px",
+              overflow: "hidden",
+            }}
+          >
+            <p>
+              This is the content inside the collapsible section with a
+              transition effect.
+            </p>
+          </CollapsibleContent>
+        </Collapsible>
+        <Collapsible>
+          <CollapsibleTrigger className="px-4 py-2 bg-blue-500 text-white">
+            Toggle Content
+          </CollapsibleTrigger>
+          <CollapsibleContent className="px-4 py-2 bg-gray-100">
+            <CollapsibleHeader>
+              <CollapsibleTitle>Section Title</CollapsibleTitle>
+              <CollapsibleSubtitle>Subtitle or Description</CollapsibleSubtitle>
+            </CollapsibleHeader>
+            <CollapsibleSeparator />
+            <div className="collapsible-body">
+              <p>This is the collapsible content.</p>
+            </div>
+            <CollapsibleSeparator />
+            <CollapsibleFooter>
+              <button className="bg-blue-500 text-white px-4 py-2">
+                Footer Button
+              </button>
+            </CollapsibleFooter>
+          </CollapsibleContent>
+        </Collapsible>
+        {/* collapsible end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* combobox start */}
+        <Popover open={openC} onOpenChange={setOpenC}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={openC}
+              className="w-[200px] justify-between"
+            >
+              {value
+                ? frameworks.find((framework) => framework.value === value)
+                    ?.label
+                : "Select framework..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search framework..." />
+              <CommandList>
+                <CommandEmpty>No framework found.</CommandEmpty>
+                <CommandGroup>
+                  {frameworks.map((framework) => (
+                    <CommandItem
+                      key={framework.value}
+                      value={framework.value}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue);
+                        setOpenC(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value === framework.value
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {framework.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <div className="flex items-center space-x-4">
+          <p className="text-sm text-muted-foreground">Status</p>
+          <Popover open={openZ} onOpenChange={setOpenZ}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-[150px] justify-start"
+              >
+                {selectedStatus ? (
+                  <>
+                    <selectedStatus.icon className="mr-2 h-4 w-4 shrink-0" />
+                    {selectedStatus.label}
+                  </>
+                ) : (
+                  <>+ Set status</>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0" side="right" align="start">
+              <Command>
+                <CommandInput placeholder="Change status..." />
+                <CommandList>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandGroup>
+                    {statuses.map((status) => (
+                      <CommandItem
+                        key={status.value}
+                        value={status.value}
+                        onSelect={(value) => {
+                          setSelectedStatus(
+                            statuses.find(
+                              (priority) => priority.value === value
+                            ) || null
+                          );
+                          setOpenZ(false);
+                        }}
+                      >
+                        <status.icon
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            status.value === selectedStatus?.value
+                              ? "opacity-100"
+                              : "opacity-40"
+                          )}
+                        />
+                        <span>{status.label}</span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div className="flex w-full flex-col items-start justify-between rounded-md border px-4 py-3 sm:flex-row sm:items-center">
+          <p className="text-sm font-medium leading-none">
+            <span className="mr-2 rounded-lg bg-primary px-2 py-1 text-xs text-primary-foreground">
+              {label}
+            </span>
+            <span className="text-muted-foreground">Create a new project</span>
+          </p>
+          <DropdownMenu open={open} onOpenChange={setOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[200px]">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  Assign to...
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Set due date...
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <Tags className="mr-2 h-4 w-4" />
+                    Apply label
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Filter label..."
+                        autoFocus={true}
+                      />
+                      <CommandList>
+                        <CommandEmpty>No label found.</CommandEmpty>
+                        <CommandGroup>
+                          {labels.map((label) => (
+                            <CommandItem
+                              key={label}
+                              value={label}
+                              onSelect={(value) => {
+                                setLabel(value);
+                                setOpen(false);
+                              }}
+                            >
+                              {label}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-red-600">
+                  <Trash className="mr-2 h-4 w-4" />
+                  Delete
+                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="language"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Language</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-[200px] justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? languages.find(
+                                (language) => language.value === field.value
+                              )?.label
+                            : "Select language"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search language..." />
+                        <CommandList>
+                          <CommandEmpty>No language found.</CommandEmpty>
+                          <CommandGroup>
+                            {languages.map((language) => (
+                              <CommandItem
+                                value={language.label}
+                                key={language.value}
+                                onSelect={() => {
+                                  form.setValue("language", language.value);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    language.value === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {language.label}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription>
+                    This is the language that will be used in the dashboard.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+        {/* combobox end */}
       </div>
       <div className="flex flex-wrap gap-4 justify-center">
         {/* calendar start */}
@@ -1301,7 +1871,6 @@ export default function HomePage() {
             <button className="btn btn-primary">Primary Action</button>
           </CardFooter>
         </Card>
-
         {/* card end */}
       </div>
       <div className="flex flex-wrap gap-4 justify-center">
@@ -1431,6 +2000,112 @@ export default function HomePage() {
           </div>
         </div>
         {/* checkbox end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* Drawer start */}
+        <Drawer>
+          <DrawerTrigger>Open</DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+              <DrawerDescription>
+                This action cannot be undone.
+              </DrawerDescription>
+            </DrawerHeader>
+            <DrawerFooter>
+              <Button>Submit</Button>
+              <DrawerClose>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+        <Drawer>
+          <DrawerTrigger className="btn btn-primary">Open Drawer</DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Simple Drawer</DrawerTitle>
+              <DrawerDescription>
+                This is a simple drawer with a title and description.
+              </DrawerDescription>
+            </DrawerHeader>
+            <DrawerFooter>
+              <DrawerClose className="btn btn-secondary">Close</DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+        <Drawer>
+          <DrawerTrigger className="btn btn-primary">Open Drawer</DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Extended Drawer</DrawerTitle>
+              <DrawerDescription>
+                This drawer includes more detailed content, allowing for more
+                interaction.
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4">
+              <p>
+                Here you can add more content, such as forms, lists, or any
+                other components you need to display within the drawer.
+              </p>
+              <p className="mt-4">
+                You can also make this content scrollable if it becomes too long
+                to fit on the screen.
+              </p>
+            </div>
+            <DrawerFooter>
+              <DrawerClose className="btn btn-secondary">Close</DrawerClose>
+              <button className="btn btn-primary">Save Changes</button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+        <Drawer>
+          <DrawerTrigger className="btn btn-primary">Open Form</DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Form Drawer</DrawerTitle>
+              <DrawerDescription>
+                Fill out the form below and click submit.
+              </DrawerDescription>
+            </DrawerHeader>
+            <form onSubmit={handleSubmitX} className="p-4">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  required
+                />
+              </div>
+              <DrawerFooter>
+                <DrawerClose className="btn btn-secondary">Cancel</DrawerClose>
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </DrawerFooter>
+            </form>
+          </DrawerContent>
+        </Drawer>
+        {/* Drawer end */}
       </div>
       <div className="flex flex-wrap gap-4 justify-center">
         {/* command start */}
@@ -4313,6 +4988,428 @@ export default function HomePage() {
           </Toggle>
         </div>
         {/* toggle end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* otp start */}
+        <InputOTP maxLength={6}>
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+          </InputOTPGroup>
+          <InputOTPSeparator />
+          <InputOTPGroup>
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>
+        <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>
+        <InputOTP maxLength={6}>
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+          </InputOTPGroup>
+          <InputOTPSeparator />
+          <InputOTPGroup>
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
+          </InputOTPGroup>
+          <InputOTPSeparator />
+          <InputOTPGroup>
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>{" "}
+        <div className="space-y-2">
+          <InputOTP
+            maxLength={6}
+            value={value}
+            onChange={(value) => setValue(value)}
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
+          <div className="text-center text-sm">
+            {value === "" ? (
+              <>Enter your one-time password.</>
+            ) : (
+              <>You entered: {value}</>
+            )}
+          </div>
+        </div>
+        {/* otp end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* menubar start */}
+        <Menubar>
+          <MenubarMenu>
+            <MenubarTrigger>File</MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>
+                New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>
+                New Window <MenubarShortcut>⌘N</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem disabled>New Incognito Window</MenubarItem>
+              <MenubarSeparator />
+              <MenubarSub>
+                <MenubarSubTrigger>Share</MenubarSubTrigger>
+                <MenubarSubContent>
+                  <MenubarItem>Email link</MenubarItem>
+                  <MenubarItem>Messages</MenubarItem>
+                  <MenubarItem>Notes</MenubarItem>
+                </MenubarSubContent>
+              </MenubarSub>
+              <MenubarSeparator />
+              <MenubarItem>
+                Print... <MenubarShortcut>⌘P</MenubarShortcut>
+              </MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Edit</MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>
+                Undo <MenubarShortcut>⌘Z</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>
+                Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarSub>
+                <MenubarSubTrigger>Find</MenubarSubTrigger>
+                <MenubarSubContent>
+                  <MenubarItem>Search the web</MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem>Find...</MenubarItem>
+                  <MenubarItem>Find Next</MenubarItem>
+                  <MenubarItem>Find Previous</MenubarItem>
+                </MenubarSubContent>
+              </MenubarSub>
+              <MenubarSeparator />
+              <MenubarItem>Cut</MenubarItem>
+              <MenubarItem>Copy</MenubarItem>
+              <MenubarItem>Paste</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>View</MenubarTrigger>
+            <MenubarContent>
+              <MenubarCheckboxItem>
+                Always Show Bookmarks Bar
+              </MenubarCheckboxItem>
+              <MenubarCheckboxItem checked>
+                Always Show Full URLs
+              </MenubarCheckboxItem>
+              <MenubarSeparator />
+              <MenubarItem inset>
+                Reload <MenubarShortcut>⌘R</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem disabled inset>
+                Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem inset>Toggle Fullscreen</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem inset>Hide Sidebar</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Profiles</MenubarTrigger>
+            <MenubarContent>
+              <MenubarRadioGroup value="benoit">
+                <MenubarRadioItem value="andy">Andy</MenubarRadioItem>
+                <MenubarRadioItem value="benoit">Benoit</MenubarRadioItem>
+                <MenubarRadioItem value="Luis">Luis</MenubarRadioItem>
+              </MenubarRadioGroup>
+              <MenubarSeparator />
+              <MenubarItem inset>Edit...</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem inset>Add Profile...</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
+        {/* menubar end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* pagination start */}
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" isActive>
+                2
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">3</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+        {/* pagination end */}
+      </div>
+      <div className="flex flex-row gap-4 justify-center">
+        {/* resizable start */}
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="max-w-md rounded-lg border"
+        >
+          <ResizablePanel defaultSize={50}>
+            <div className="flex h-[200px] items-center justify-center p-6">
+              <span className="font-semibold">One</span>
+            </div>
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={50}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel defaultSize={25}>
+                <div className="flex h-full items-center justify-center p-6">
+                  <span className="font-semibold">Two</span>
+                </div>
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={75}>
+                <div className="flex h-full items-center justify-center p-6">
+                  <span className="font-semibold">Three</span>
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+        <ResizablePanelGroup
+          direction="vertical"
+          className="min-h-[200px] max-w-md rounded-lg border"
+        >
+          <ResizablePanel defaultSize={25}>
+            <div className="flex h-full items-center justify-center p-6">
+              <span className="font-semibold">Header</span>
+            </div>
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={75}>
+            <div className="flex h-full items-center justify-center p-6">
+              <span className="font-semibold">Content</span>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="min-h-[200px] max-w-md rounded-lg border"
+        >
+          <ResizablePanel defaultSize={25}>
+            <div className="flex h-full items-center justify-center p-6">
+              <span className="font-semibold">Sidebar</span>
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={75}>
+            <div className="flex h-full items-center justify-center p-6">
+              <span className="font-semibold">Content</span>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+        {/* resizable end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* toast start */}
+        <Button
+          variant="outline"
+          onClick={() =>
+            ToastSonner("Event has been created", {
+              description: "Sunday, December 03, 2023 at 9:00 AM",
+              action: {
+                label: "Undo",
+                onClick: () => console.log("Undo"),
+              },
+            })
+          }
+        >
+          Show Toast
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            toasty({
+              title: "Scheduled: Catch up ",
+              description: "Friday, February 10, 2023 at 5:57 PM",
+              action: (
+                <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+              ),
+            });
+          }}
+        >
+          Add to calendar
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            toasty({
+              description: "Your message has been sent.",
+            });
+          }}
+        >
+          Show Toast
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            toasty({
+              title: "Uh oh! Something went wrong.",
+              description: "There was a problem with your request.",
+            });
+          }}
+        >
+          Show Toast
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            toasty({
+              title: "Uh oh! Something went wrong.",
+              description: "There was a problem with your request.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }}
+        >
+          Show Toast
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            toasty({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "There was a problem with your request.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }}
+        >
+          Show Toast
+        </Button>
+        {/* toast end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* toggle group start */}
+        <ToggleGroup type="multiple">
+          <ToggleGroupItem value="bold" aria-label="Toggle bold">
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Toggle italic">
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Toggle underline">
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>{" "}
+        <ToggleGroup type="multiple">
+          <ToggleGroupItem value="bold" aria-label="Toggle bold">
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Toggle italic">
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Toggle underline">
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>{" "}
+        <ToggleGroup variant="outline" type="multiple">
+          <ToggleGroupItem value="bold" aria-label="Toggle bold">
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Toggle italic">
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Toggle underline">
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <ToggleGroup type="single">
+          <ToggleGroupItem value="bold" aria-label="Toggle bold">
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Toggle italic">
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Toggle underline">
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <ToggleGroup size={"sm"} type="multiple">
+          <ToggleGroupItem value="bold" aria-label="Toggle bold">
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Toggle italic">
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Toggle underline">
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>{" "}
+        <ToggleGroup size={"lg"} type="multiple">
+          <ToggleGroupItem value="bold" aria-label="Toggle bold">
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Toggle italic">
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Toggle underline">
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <ToggleGroup disabled type="single">
+          <ToggleGroupItem value="bold" aria-label="Toggle bold">
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Toggle italic">
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Toggle underline">
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>
+        {/* toggle group end */}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center">
+        {/* tooltips start */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline">Hover</Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Add to library</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        {/* tooltips end */}
       </div>
     </div>
   );
