@@ -1,4 +1,5 @@
 "use client";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import "./globals.css";
 
 export default function RootLayout({
@@ -7,10 +8,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
-      <body className="flex min-h-screen bg-slate-100">
-        {children}
-      </body>
-    </html>
+    <>
+      <html lang="en" suppressHydrationWarning>
+        <head />
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </>
   );
 }

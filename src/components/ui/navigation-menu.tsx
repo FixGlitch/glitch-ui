@@ -56,6 +56,7 @@ const navigationMenuTriggerStyle = cva(
         warning: "bg-warning text-black hover:bg-warningDark",
         neutral: "bg-neutralLight text-black hover:bg-neutralDark",
         accent: "bg-accentLight text-white hover:bg-accentDark",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
       },
     },
     defaultVariants: {
@@ -79,7 +80,8 @@ interface NavigationMenuTriggerProps
     | "danger"
     | "warning"
     | "neutral"
-    | "accent";
+    | "accent"
+    | "ghost";
 }
 
 const NavigationMenuTrigger = React.forwardRef<

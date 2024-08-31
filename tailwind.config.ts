@@ -21,47 +21,64 @@ const config = {
       colors: {
         current: "currentColor",
         transparent: "transparent",
-        white: "#ffffff", // Blanco puro
-        black: "#000000", // Negro puro
+        white: "#ffffff",
+        black: "#000000",
         gray: {
-          100: "#f7fafc", // Muy claro, casi blanco
-          200: "#edf2f7",
-          300: "#e2e8f0",
-          400: "#cbd5e0",
-          500: "#a0aec0",
-          600: "#718096",
-          700: "#4a5568",
-          800: "#2d3748", // Gris oscuro
-          900: "#1a202c", // Muy oscuro, casi negro
+          50: "#F6F6F6",
+          100: "#E7E7E7",
+          200: "#D1D1D1",
+          300: "#B0B0B0",
+          400: "#888888",
+          500: "#6D6D6D",
+          600: "#5D5D5D",
+          700: "#4F4F4F",
+          800: "#454545",
+          900: "#3D3D3D",
+          950: "#141414",
         },
-        primary: "#2d3748", // Gris oscuro para elementos primarios
-        secondary: "#a0aec0", // Gris medio para elementos secundarios
-        success: "#4caf50", // Verde para éxito (ejemplo)
-        danger: "#f44336", // Rojo para peligro (ejemplo)
-        warning: "#ff9800", // Naranja para advertencias (ejemplo)
-        buttonLight: "#718096", // Gris para botones claros
-        buttonDark: "#1a202c", // Gris oscuro para botones oscuros
-        inputBackground: "#ffffff", // Fondo blanco para inputs
-        inputBorder: "#cbd5e0", // Borde gris para inputs
-        inputText: "#2d3748", // Texto gris oscuro para inputs
-        placeholder: "#a0aec0", // Color para placeholder en inputs
-        disabled: "#cbd5e0", // Color gris claro para elementos deshabilitados
+        primary: "#3C3C3C",
+        secondary: "#898989",
+        success: {
+          primary: "#02542D",
+          primaryHover: "#009951",
+          secondary: "#CFF7D3",
+          secondaryHover: "#AFF4C6",
+          tertiary: "#EBFFEE",
+          tertiaryHover: "#CFF7D3",
+        },
+        danger: {
+          primary: "#EC221F",
+          primaryHover: "#C00F0C",
+          secondary: "#FDD3D0",
+          secondaryHover: "#FCB3AD",
+          tertiary: "#FEE9E7",
+          tertiaryHover: "#FDD3D0",
+        },
+        warning: {
+          primary: "#E8B931",
+          primaryHover: "#E5A000",
+          secondary: "#FFF1C2",
+          secondaryHover: "#FFE8A3",
+          tertiary: "#FFFBEB",
+          tertiaryHover: "#FFF1C2",
+        },
+        buttonLight: "#141414",
+        buttonDark: "#FBFBFB",
+        inputBackground: "#1E1E1E",
+        inputBorder: "#65558F",
+        inputText: "#3D3D3D",
+        placeholder: "#888888",
+        disabled: "#9D82E2",
         hover: {
-          buttonLight: "#4a5568", // Hover para botones claros
-          buttonDark: "#2d3748", // Hover para botones oscuros
+          buttonLight: "#65558F",
+          buttonDark: "#9D82E2",
         },
-        successLight: "#81c784", // Verde claro para éxito
-        successDark: "#388e3c", // Verde oscuro para éxito
-        infoLight: "#64b5f6", // Azul claro para información
-        infoDark: "#1976d2", // Azul oscuro para información
-        warningLight: "#ffb74d", // Naranja claro para advertencias
-        warningDark: "#f57c00", // Naranja oscuro para advertencias
-        dangerLight: "#e57373", // Rojo claro para peligro
-        dangerDark: "#d32f2f", // Rojo oscuro para peligro
-        neutralLight: "#f5f5f5", // Gris claro neutro
-        neutralDark: "#616161", // Gris oscuro neutro
-        accentLight: "#ff4081", // Rosa claro para acentos
-        accentDark: "#c51162", // Rosa oscuro para acentos
+        infoLight: "#665C9A",
+        infoDark: "#9481FF",
+        neutralLight: "#D1D1D1",
+        neutralDark: "#E7E7E7",
+        accentLight: "#ff4081",
+        accentDark: "#c51162",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

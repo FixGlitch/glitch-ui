@@ -292,6 +292,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import NavBar from "./NavBar/NavBar";
 
 const tabData = [
   {
@@ -564,6 +565,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col justify-start items-start gap-4">
+      <NavBar/>
       <div className="flex flex-wrap gap-4 justify-center">
         {/* accordion start */}
         <Accordion type="single" collapsible>
