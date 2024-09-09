@@ -3,7 +3,11 @@ import HomePage from "@/components/HomePage";
 
 const Home = () => {
   const renderContent = () => {
-    return <HomePage />;
+    return (
+      <div>
+        <HomePage />
+      </div>
+    );
   };
 
   return <>{renderContent()}</>;

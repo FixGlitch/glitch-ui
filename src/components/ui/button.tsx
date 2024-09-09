@@ -10,17 +10,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-white hover:bg-primary/90",
-        cancel: "bg-red-100 text-red-700 hover:bg-red-200",
-        delete: "bg-red-500 text-white hover:bg-red-600",
+        cancel: "bg-danger-light text-danger-dark hover:bg-danger-lightHover",
+        delete: "bg-danger-primary text-white hover:bg-danger-primaryHover",
         destructive: "bg-danger text-white hover:bg-danger/90",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-white hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        success: "bg-success text-white hover:bg-success/80",
-        info: "bg-info text-white hover:bg-info/80",
-        warning: "bg-warning text-white hover:bg-warning/80",
+        success: "bg-success-primary text-white hover:bg-success-primaryHover",
+        info: "bg-infoLight text-white hover:bg-infoDark",
+        warning: "bg-warning-primary text-white hover:bg-warning-primaryHover",
         loading: "bg-gray-500 text-white hover:bg-gray-400",
         active: "bg-gray-600 text-white hover:bg-gray-500",
         inactive: "bg-gray-300 text-white hover:bg-gray-200",
@@ -40,7 +40,7 @@ const buttonVariants = cva(
           "border border-primary shadow-md text-primary hover:bg-primary/10",
         neon: "bg-green-400 text-white hover:bg-green-300",
         retro: "bg-yellow-500 text-black hover:bg-yellow-400",
-        danger: "bg-red-600 text-white hover:bg-red-500",
+        danger: "bg-danger-primary text-white hover:bg-danger-primaryHover",
         cool: "bg-blue-600 text-white hover:bg-blue-500",
       },
       size: {

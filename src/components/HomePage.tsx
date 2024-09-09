@@ -3,20 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogActionWithIcon,
-} from "@/components/ui/alert-dialog";
-import { AiOutlineClose } from "react-icons/ai";
 import {
   AspectRatio,
   aspectRatioVariants,
@@ -24,7 +10,7 @@ import {
 } from "@/components/ui/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
@@ -116,7 +102,6 @@ import {
   PopoverTrigger,
   TitlePopover,
 } from "@/components/ui/popover";
-import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
@@ -152,7 +137,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import {
@@ -292,21 +276,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import NavBar from "./NavBar/NavBar";
-
-const tabData = [
-  {
-    id: "description",
-    label: "Description",
-    content: "This is the description content.",
-  },
-  {
-    id: "features",
-    label: "Features",
-    content: "This is the features content.",
-  },
-  { id: "pricing", label: "Pricing", content: "This is the pricing content." },
-];
 
 const frameworks = [
   {
@@ -421,7 +390,6 @@ export default function HomePage() {
   const [priceRange, setPriceRange] = useState([20, 80]);
   const [brightness, setBrightness] = useState([75]);
   const [speed, setSpeed] = useState([1]);
-  const items = Array.from({ length: 100 }, (_, index) => index);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [enabled, setEnabled] = useState(true);
   const [isActive, setIsActive] = useState(true);
@@ -487,7 +455,6 @@ export default function HomePage() {
   const handleChangeNew = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(event.target.value);
   };
-  const [activeTab, setActiveTab] = useState(tabData[0].id);
 
   const handleRowClick = (index: number) => {
     setSelectedRow(index);
@@ -565,7 +532,6 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col justify-start items-start gap-4">
-      <NavBar/>
       <div className="flex flex-wrap gap-4 justify-center">
         {/* accordion start */}
         <Accordion type="single" collapsible>
@@ -934,179 +900,7 @@ export default function HomePage() {
         </Button>
         {/* botones end */}
       </div>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {/* alertas start */}
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="default" className="px-4 py-2 text-lg">
-              Open Alert
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Alert Title</AlertDialogTitle>
-              <AlertDialogDescription>
-                This is an example of an alert dialog description.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction>Confirm</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="danger" size="sm">
-              Eliminar Cuenta
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Esta acción no se puede deshacer. Esto eliminará permanentemente
-                tu cuenta y todos tus datos.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction
-                className={buttonVariants({ variant: "danger" })}
-              >
-                Confirmar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="danger" size="sm">
-              Eliminar Archivo
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Eliminar Archivo</AlertDialogTitle>
-              <AlertDialogDescription>
-                ¿Deseas eliminar este archivo permanentemente?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel
-                className={buttonVariants({ variant: "outline" })}
-              >
-                Cancelar
-              </AlertDialogCancel>
-              <AlertDialogAction
-                className={buttonVariants({ variant: "destructive" })}
-              >
-                Eliminar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="cool" size="sm">
-              Eliminar Proyecto
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="bg-red-50 border-red-500">
-            <AlertDialogHeader className="text-red-700">
-              <AlertDialogTitle>Advertencia</AlertDialogTitle>
-              <AlertDialogDescription>
-                Estás a punto de eliminar este proyecto. Esta acción no se puede
-                deshacer.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel
-                className={buttonVariants({ variant: "cancel" })}
-              >
-                Cancelar
-              </AlertDialogCancel>
-              <AlertDialogAction
-                className={buttonVariants({ variant: "delete" })}
-              >
-                Eliminar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="warning" size="sm">
-              Desactivar Cuenta
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="bg-gray-800 text-white border-gray-700">
-            <AlertDialogHeader className="text-white">
-              <AlertDialogTitle>Desactivar Cuenta</AlertDialogTitle>
-              <AlertDialogDescription>
-                Estás a punto de desactivar tu cuenta. Esto no eliminará tu
-                cuenta, pero no podrás acceder a los servicios hasta que la
-                reactives.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="bg-gray-700 text-white hover:bg-gray-600">
-                Cancelar
-              </AlertDialogCancel>
-              <AlertDialogAction className="bg-yellow-500 text-white hover:bg-yellow-600">
-                Desactivar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="active" size="sm">
-              Acciones Múltiples
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Elige una acción</AlertDialogTitle>
-              <AlertDialogDescription>
-                Puedes elegir entre múltiples acciones a continuación:
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction className="bg-blue-500 text-white hover:bg-blue-600">
-                Guardar
-              </AlertDialogAction>
-              <AlertDialogAction className="bg-green-500 text-white hover:bg-green-600">
-                Publicar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="default" size="sm">
-              Open Dialog
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogActionWithIcon icon={AiOutlineClose}>
-                Close
-              </AlertDialogActionWithIcon>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        {/* alertas end */}
-      </div>
+
       <div className="flex flex-wrap gap-4 justify-center">
         {/* image radio start */}
         <AspectRatio className={defaultAspectRatio}>
@@ -3922,172 +3716,7 @@ export default function HomePage() {
         </div>
         {/* popover end */}
       </div>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {/* proggres bar start */}
-        <div className="flex flex-wrap gap-4 p-4 space-y-4">
-          <div>
-            <h3 className="text-lg font-medium">Default Progress Bar</h3>
-            <Progress
-              value={valueNew}
-              size="md"
-              color="primary"
-              type="default"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-medium">Striped Progress Bar</h3>
-            <Progress
-              value={valueNew}
-              size="md"
-              color="secondary"
-              type="striped"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-medium">Animated Progress Bar</h3>
-            <Progress
-              value={valueNew}
-              size="lg"
-              color="tertiary"
-              type="animated"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-medium">Small Primary Progress Bar</h3>
-            <Progress
-              value={valueNew}
-              size="sm"
-              color="primary"
-              type="default"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-medium">
-              Large Striped Secondary Progress Bar
-            </h3>
-            <Progress
-              value={valueNew}
-              size="lg"
-              color="secondary"
-              type="striped"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-medium">
-              Medium Animated Tertiary Progress Bar
-            </h3>
-            <Progress
-              value={valueNew}
-              size="md"
-              color="tertiary"
-              type="animated"
-            />
-          </div>
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium mb-2">Basic Progress Bar</h3>
-          <Progress value={50} className="bg-gray-200" />
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium mb-2">Loading Progress</h3>
-          <Progress value={75} className="bg-gray-300" />
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium mb-2">Full Progress</h3>
-          <Progress value={100} className="bg-gray-400" />
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium mb-2">Customized Progress Bar</h3>
-          <Progress
-            value={60}
-            className="bg-blue-200"
-            style={{ backgroundColor: "lightgray" }}
-          >
-            <div
-              className="h-full flex-1 bg-green-500"
-              style={{ transform: `translateX(-${100 - (60 || 0)}%)` }}
-            />
-          </Progress>
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium mb-2">Dynamic Progress Bar</h3>
-          <Progress value={valueNum} className="bg-gray-100" />
-          <div className="mt-4">
-            <button
-              onClick={increment}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md mr-2"
-            >
-              Increase Progress
-            </button>
-            <input
-              type="number"
-              value={valueNum}
-              onChange={handleChange}
-              min="0"
-              max="100"
-              className="px-4 py-2 border rounded-md"
-            />
-          </div>
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium mb-2">Progress with Label</h3>
-          <div className="relative">
-            <Progress value={40} className="bg-gray-200" />
-            <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-black">
-              40%
-            </span>
-          </div>
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium">Default Progress Bar</h3>
-          <Progress value={valueNew} size="md" color="primary" type="default" />
-        </div>{" "}
-        <div className="p-4">
-          <h3 className="text-lg font-medium">Striped Progress Bar</h3>
-          <Progress
-            value={valueNew}
-            size="md"
-            color="secondary"
-            type="striped"
-          />
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium">Animated Progress Bar</h3>
-          <Progress
-            value={valueNew}
-            size="lg"
-            color="tertiary"
-            type="animated"
-          />
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium">Small Primary Progress Bar</h3>
-          <Progress value={valueNew} size="sm" color="primary" type="default" />
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-medium">
-            Large Striped Secondary Progress Bar
-          </h3>
-          <Progress
-            value={valueNew}
-            size="lg"
-            color="secondary"
-            type="striped"
-          />
-        </div>{" "}
-        <div className="p-4">
-          <h3 className="text-lg font-medium">
-            Medium Animated Tertiary Progress Bar
-          </h3>
-          <Progress
-            value={valueNew}
-            size="md"
-            color="tertiary"
-            type="animated"
-          />
-        </div>
-        {/* proggres bar start */}
-      </div>
+      
       <div className="flex flex-wrap gap-4 justify-center">
         {/* radio Group start */}
         <form>
@@ -4150,89 +3779,6 @@ export default function HomePage() {
           <RadioGroupItem value="option3" size="large" color="danger" />
         </RadioGroup>
         {/* radio Group end */}
-      </div>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {/* scrooll area start */}
-        <div className="h-60 w-60">
-          <ScrollArea>
-            <div className="h-[200%] w-full bg-gray-200">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
-              quisquam cum assumenda praesentium minima quidem laudantium
-              corrupti, reiciendis ex distinctio architecto eveniet, odit neque
-              nulla ad tempora facere. Ipsa, vitae!
-            </div>
-          </ScrollArea>
-        </div>
-        <div className="h-60 w-60">
-          <ScrollArea>
-            <div className="h-[150%] w-[150%] bg-gray-200">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus
-              dolorum dicta tempora est enim commodi eos optio eveniet. Ipsam
-              culpa officiis animi doloremque magni eligendi saepe nobis nemo
-              ullam ab! Lorem, ipsum dolor sit amet consectetur adipisicing
-              elit. Id et aperiam doloribus repellat excepturi ex? Dolore
-              excepturi veritatis nemo cupiditate porro enim maxime tempora,
-              facilis dolorum ullam natus magni aliquid!
-            </div>
-          </ScrollArea>
-        </div>
-        <div className="h-60 w-60">
-          <ScrollArea className="bg-gray-100 p-4">
-            <ScrollBar orientation="vertical" className="bg-blue-500" />
-            <ScrollBar orientation="horizontal" className="bg-blue-500" />
-            <div className="h-[200%] w-[200%] bg-gray-200">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus
-              dolorum dicta tempora est enim commodi eos optio eveniet. Ipsam
-              culpa officiis animi doloremque magni eligendi saepe nobis nemo
-              ullam ab! Lorem, ipsum dolor sit amet consectetur adipisicing
-              elit. Id et aperiam doloribus repellat excepturi ex? Dolore
-              excepturi veritatis nemo cupiditate porro enim maxime tempora,
-              facilis dolorum ullam natus magni aliquid!
-            </div>
-          </ScrollArea>
-        </div>
-        <div className="h-screen w-64 bg-gray-800 text-white">
-          <ScrollArea className="h-full">
-            <div className="p-4">
-              <ul>
-                {items.map((item) => (
-                  <li key={item} className="py-2">
-                    Item {item + 1}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </ScrollArea>
-        </div>
-        <div className="flex space-x-4">
-          <div className="h-60 w-60 bg-gray-100">
-            <ScrollArea>
-              <div className="h-[150%] w-full bg-gray-300">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Delectus dolorum dicta tempora est enim commodi eos optio
-                eveniet. Ipsam culpa officiis animi doloremque magni eligendi
-                saepe nobis nemo ullam ab! Lorem, ipsum dolor sit amet
-                consectetur adipisicing elit. Id et aperiam doloribus repellat
-                excepturi ex? Dolore excepturi veritatis nemo cupiditate porro
-                enim maxime tempora, facilis dolorum ullam natus magni aliquid!
-              </div>
-            </ScrollArea>
-          </div>
-          <div className="h-60 w-60 bg-gray-100">
-            <ScrollArea>
-              <div className="w-[150%] h-full bg-gray-300">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Delectus dolorum dicta tempora est enim commodi eos optio
-                eveniet. Ipsam culpa officiis animi doloremque magni eligendi
-                saepe nobis nemo ullam ab! Lorem, ipsum dolor sit amet
-                consectetur adipisicing elit. Id et aperiam doloribus repellat
-                excepturi ex? Dolore excepturi veritatis nemo cupiditate porro
-                enim maxime tempora, facilis dolorum ullam natus magni aliquid!
-              </div>
-            </ScrollArea>
-          </div>
-        </div>
-        {/* scrooll area end */}
       </div>
       <div className="flex flex-wrap gap-4 justify-center">
         {/* select start */}
@@ -4752,163 +4298,6 @@ export default function HomePage() {
           </Table>
         </div>
         {/* table end */}
-      </div>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {/* tabs start */}
-        <Tabs defaultValue="tab1" className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="tab1">Tab 1</TabsTrigger>
-            <TabsTrigger value="tab2">Tab 2</TabsTrigger>
-            <TabsTrigger value="tab3">Tab 3</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tab1">
-            <p>This is the content of Tab 1.</p>
-          </TabsContent>
-          <TabsContent value="tab2">
-            <p>This is the content of Tab 2.</p>
-          </TabsContent>
-          <TabsContent value="tab3">
-            <p>This is the content of Tab 3.</p>
-          </TabsContent>
-        </Tabs>
-        <Tabs defaultValue="overview" className="max-w-md mx-auto">
-          <TabsList className="mb-4 border-b border-gray-200">
-            <TabsTrigger value="overview" className="text-blue-600">
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="details" className="text-blue-600">
-              Details
-            </TabsTrigger>
-            <TabsTrigger value="reviews" className="text-blue-600">
-              Reviews
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview" className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold">Overview</h3>
-            <p>This is the overview content.</p>
-          </TabsContent>
-          <TabsContent value="details" className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold">Details</h3>
-            <p>This is the details content.</p>
-          </TabsContent>
-          <TabsContent value="reviews" className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold">Reviews</h3>
-            <p>This is the reviews content.</p>
-          </TabsContent>
-        </Tabs>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="mb-4">
-            {tabData.map((tab) => (
-              <TabsTrigger key={tab.id} value={tab.id}>
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {tabData.map((tab) => (
-            <TabsContent key={tab.id} value={tab.id}>
-              <p>{tab.content}</p>
-            </TabsContent>
-          ))}
-        </Tabs>
-        <Tabs defaultValue="photos" className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="photos">Photos</TabsTrigger>
-            <TabsTrigger value="videos">Videos</TabsTrigger>
-            <TabsTrigger value="documents">Documents</TabsTrigger>
-          </TabsList>
-          <TabsContent value="photos">
-            <div className="grid grid-cols-3 gap-4">
-              <img src="/photo1.jpg" alt="Photo 1" />
-              <img src="/photo2.jpg" alt="Photo 2" />
-              <img src="/photo3.jpg" alt="Photo 3" />
-            </div>
-          </TabsContent>
-          <TabsContent value="videos">
-            <div className="space-y-4">
-              <video controls src="/video1.mp4"></video>
-              <video controls src="/video2.mp4"></video>
-            </div>
-          </TabsContent>
-          <TabsContent value="documents">
-            <ul className="list-disc pl-4">
-              <li>
-                <a href="/doc1.pdf" download>
-                  Document 1
-                </a>
-              </li>
-              <li>
-                <a href="/doc2.pdf" download>
-                  Document 2
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
-        </Tabs>
-        <Tabs defaultValue="login" className="max-w-md mx-auto">
-          <TabsList className="mb-4">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Register</TabsTrigger>
-          </TabsList>
-          <TabsContent value="login">
-            <form>
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium">
-                  Email
-                </label>
-                <input type="email" id="email" className="mt-1 block w-full" />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="password" className="block text-sm font-medium">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="mt-1 block w-full"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md"
-              >
-                Login
-              </button>
-            </form>
-          </TabsContent>
-          <TabsContent value="register">
-            <form>
-              <div className="mb-4">
-                <label htmlFor="name" className="block text-sm font-medium">
-                  Name
-                </label>
-                <input type="text" id="name" className="mt-1 block w-full" />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium">
-                  Email
-                </label>
-                <input type="email" id="email" className="mt-1 block w-full" />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="password" className="block text-sm font-medium">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="mt-1 block w-full"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-green-600 text-white py-2 rounded-md"
-              >
-                Register
-              </button>
-            </form>
-          </TabsContent>
-        </Tabs>
-        {/* tabs start */}
       </div>
       <div className="flex flex-wrap gap-4 justify-center">
         {/* textarea start */}

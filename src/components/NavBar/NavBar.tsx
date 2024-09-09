@@ -1,3 +1,4 @@
+import React from "react";
 import { Moon, Sparkle, Sun } from "lucide-react";
 import {
   NavigationMenu,
@@ -6,7 +7,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
-import React from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +16,8 @@ import {
 import { Button } from "../ui/button";
 import { useTheme } from "next-themes";
 import { Command, CommandInput } from "../ui/command";
-import ListItem from "./components/ListItem";
 import { NavLinks } from "./components/NavLinks/NavLinks";
+import ListItem from "./components/ListItem";
 
 const NavBar = () => {
   const { setTheme } = useTheme();
